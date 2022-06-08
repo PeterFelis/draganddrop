@@ -1,8 +1,6 @@
 <script>
-	import { draggable } from '@neodrag/svelte';
-	import { each, loop_guard } from 'svelte/internal';
 
-	let hulp = [];
+	let lala = [];
 
 	let dingen = [
 		{ vnaam: 'Peter', anaam: 'Felis', id: 1, pos: 100 },
@@ -13,38 +11,42 @@
 	];
 
 	function drag(e) {
+		let hulp=[];
 		let scherm = document.querySelectorAll('.lijst .card');
 		scherm.forEach((item) => {
 			hulp.push({ y: item.offsetTop, id: item.getAttribute('data-id') });
 		});
+		lala=[...hulp];
+		
 	}
 
 	function dragend(e) {
 		let pos = e.clientY;
-		console.log('pos ' + pos);
 		let id = e.target.getAttribute('data-id');
-		let intevoegen = dingen.filter((dingen) => dingen.id == id);
-		let nieuwedingen = [];
 
-		console.log(hulp.length);
-		for (let teller = 0; teller < hulp.length - 1; teller++) {
-			console.log(teller);
-			console.log(pos < hulp[teller].y);
-			if (pos > hulp[teller].y) {
-				console.log('bier ' + teller);
-				nieuwedingen.push(hulp[teller]);
-			} else {
-				nieuwedingen.push({ y: pos, id: id });
-				break;
+		let teverwijderen = lala.findIndex((item) => item.id ==id )
+		let intevoegen = (lala.splice(teverwijderen,1));
+		let nieuwedingen=[];
+
+		
+		for (let teller = 0; teller<=lala.length; teller++) {
+			if (pos < lala[teller].y) {
+				lala.splice(teller,0,intevoegen[0]);
+				break;				
 			}
 		}
+		
+		
+		for (let teller=0; teller<lala.length; teller++){
+	 	nieuwedingen.push(dingen[lala[teller].id-1]);	
+		}			
 		console.log(nieuwedingen);
-		dingen = dingen.filter((dingen) => dingen.id != id);
 
 		//console.log(dingen);
 		//console.log(intevoegen);
 		//let nieuwdingen = [...dingen];
-		//dingen = nieuwdingen;
+		dingen=[];
+		dingen = nieuwedingen;
 	}
 </script>
 
